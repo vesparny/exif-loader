@@ -1,12 +1,12 @@
 EXIF-Loader
 ====
 
-> Extract EXIF- & IPTC-data from your JPGs during build-time.
+> Extract EXIF- & size data from your JPGs during build-time.
 
 ## Install
 
 ```
-npm install --save-dev exif-loader
+npm install --save-dev exif-loader-mini
 ```
 
 ## Usage
@@ -19,7 +19,7 @@ module.exports = {
   module: {
     rules: [{
       test: /\.jpg$/,
-      use: ['exif-loader']
+      use: ['exif-loader-mini']
     }]
   }
 }
@@ -27,10 +27,8 @@ module.exports = {
 
 **modules/a.js**
 ```js
-import { exif, iptc } from './some-image.jpg';
+import { exif } from './some-image.jpg';
 
-const { imageWidth } = exif.image;
-const { object_name } = iptc;
 ```
 
 You can also use the load in tandem with the [url-loader](https://github.com/webpack-contrib/url-loader).

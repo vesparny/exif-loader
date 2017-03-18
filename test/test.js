@@ -13,11 +13,10 @@ const getContext = (img, cb) => ({
 });
 
 test('Has Exif/IPTC data', (t) => {
-    t.plan(3);
+    t.plan(2);
     exifLoader.call(getContext(IMG_EXIF, (_, data) => {
         const result = eval(data);
-        t.equal(result.exif.image.XResolution, 240);
-        t.equal(result.iptc.headline, 'Image title');
+        t.equal(result.exif.aperture, 8);
         t.notOk(result.file);
     }));
 });
@@ -28,30 +27,27 @@ test('Has Exif/IPTC data & file', (t) => {
     t.plan(3);
     exifLoader.call(getContext(IMG_EXIF, (_, data) => {
         const result = eval(data);
-        t.equal(result.exif.image.XResolution, 240);
-        t.equal(result.iptc.headline, 'Image title');
+        t.equal(result.exif.aperture, 8);
+        t.equal(result.size.width, 816);
         t.equal(result.file, `./${file}`);
     }), content);
 });
 
 test('Has no Exif/IPTC data', (t) => {
-    t.plan(3);
+    t.plan(1);
     exifLoader.call(getContext(IMG_NO_EXIF, (_, data) => {
         const result = eval(data);
-        t.ok(result.exif.image);
-        t.notOk(result.iptc.headline);
-        t.notOk(result.exif.image.XResolution);
+        t.notOk(result.exif.camera);
     }));
 });
 
 test('Has no Exif/IPTC data & file', (t) => {
     const file = path.basename(IMG_NO_EXIF);
     const content = `module.exports = "./${file}"`;
-    t.plan(3);
+    t.plan(2);
     exifLoader.call(getContext(IMG_NO_EXIF, (_, data) => {
         const result = eval(data);
-        t.notOk(result.exif.image.XResolution);
-        t.notOk(result.iptc.headline);
+        t.notOk(result.exif.aperture);
         t.equal(result.file, `./${file}`);
     }), content);
 });

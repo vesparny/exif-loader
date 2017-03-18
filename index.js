@@ -4,10 +4,9 @@
  * Author Emanuel Kluge (http://emanuel-kluge.de/)
 */
 
-const fs = require('fs');
 const evaluate = require('node-eval');
 const ExifImage = require('exif').ExifImage;
-const iptc = require('node-iptc');
+const sizeOf = require('image-size');
 
 const NO_EXIF_SEGMENT = 'NO_EXIF_SEGMENT';
 
@@ -32,18 +31,26 @@ const getExifData = image => new Promise((resolve, reject) => {
         if (isError(err)) {
             return reject(err);
         }
-        const exif = hasNoExifData(err) ? extractor.exifData : data;
-        return resolve({ exif });
+        const res = hasNoExifData(err) ? extractor.exifData : data;
+        const exif = {
+            camera: res.image.Make ? `${res.image.Make} ${res.image.Model}` :'',
+            aperture: res.exif.FNumber || '',
+            ISO: res.exif.ISO || '',
+            ExposureTime: res.exif.ExposureTime || '',
+            'Focal': res.exif.FocalLength || '',
+            'FocalLengthIn35mmFormat': res.exif.FocalLengthIn35mmFormat || ''
+        }
+        return resolve({exif});
     });
 });
 
-const getIptcData = image => new Promise((resolve, reject) =>
-    fs.readFile(image, (err, data) => {
-        if (err) {
-            return reject(err);
-        }
-        return resolve({ iptc: iptc(data) || {} });
-    }));
+const getSize = image => new Promise((resolve, reject) => {
+    const size = sizeOf(image)
+    return resolve({size: {
+        width: size.width,
+        height: size.height
+    }})
+});
 
 const mergeResults = done => (results) => {
     const merged = results.reduce((acc, item) => Object.assign({}, acc, item), {});
@@ -62,7 +69,7 @@ module.exports = function exifLoader(content) {
         .all([
             getFile(publicPath, content),
             getExifData(this.resourcePath),
-            getIptcData(this.resourcePath),
+            getSize(this.resourcePath)
         ])
         .then(mergeResults(done))
         .catch(done);
