@@ -6,7 +6,7 @@ EXIF-Loader
 ## Install
 
 ```
-npm install --save-dev exif-loader-mini
+npm install --save-dev exif-size-loader
 ```
 
 ## Usage
@@ -19,7 +19,7 @@ module.exports = {
   module: {
     rules: [{
       test: /\.jpg$/,
-      use: ['exif-loader-mini']
+      use: ['exif-size-loader']
     }]
   }
 }
@@ -39,7 +39,21 @@ module.exports = {
   module: {
     rules: [{
       test: /\.jpg$/,
-      use: ['exif-loader', 'url-loader']
+      use: ['exif-size-loader', 'url-loader']
+    }]
+  }
+}
+```
+
+You can also use the load in tandem with the [file-loader](https://github.com/webpack-contrib/file-loader).
+
+**webpack.config.js**
+```js
+module.exports = {
+  module: {
+    rules: [{
+      test: /\.jpg$/,
+      use: ['exif-size-loader', 'file-loader']
     }]
   }
 }
@@ -50,7 +64,6 @@ module.exports = {
 import { exif, iptc, file } from './some-image.jpg';
 
 const { imageWidth } = exif.image;
-const { object_name } = iptc;
 
 export default function () {
     return (<figure>
@@ -59,15 +72,3 @@ export default function () {
     </figure>);
 }
 ```
-
-## Contributing
-
-If you stumbled upon a bug or have an idea for improvements, feel free to [open an issue](https://github.com/herschel666/exif-loader/issues).
-
-If you want to contribute code, you're highly welcome to [open a pull-request](https://github.com/herschel666/exif-loader/pulls). Please use a feature-branch for that and make sure, the CI-test is green.
-
-Thanks!
-
-## Questions
-
-I you have questions, feel free to ping me on twitter: [@Herschel_R](https://twitter.com/Herschel_R).

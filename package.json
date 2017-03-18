@@ -1,7 +1,7 @@
 {
-  "name": "exif-loader-mini",
-  "version": "0.1.0",
-  "description": "EXIF metadata loader module for Webpack.",
+  "name": "exif-size-loader",
+  "version": "0.2.0",
+  "description": "EXIF metadata and size loader module for Webpack.",
   "main": "index.js",
   "scripts": {
     "eslint": "eslint .",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/vesparny/exif-loader-mini.git"
+    "url": "git+ssh://git@github.com/vesparny/exif-size-loader.git"
   },
   "keywords": [
     "image",
