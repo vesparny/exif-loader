@@ -33,13 +33,16 @@ const getExifData = image => new Promise((resolve, reject) => {
         }
         const res = hasNoExifData(err) ? extractor.exifData : data;
         const exif = {
-            camera: res.image.Make ? `${res.image.Make} ${res.image.Model}` :'',
-            aperture: res.exif.FNumber || '',
+            Make: res.image.Make || '',
+            Model: res.image.Model || '',
+            FNumber: res.exif.FNumber || '',
             ISO: res.exif.ISO || '',
             ExposureTime: res.exif.ExposureTime || '',
-            'Focal': res.exif.FocalLength || '',
-            'FocalLengthIn35mmFormat': res.exif.FocalLengthIn35mmFormat || ''
+            FocalLength: res.exif.FocalLength || '',
+            FocalLengthIn35mmFormat: res.exif.FocalLengthIn35mmFormat || '',
+            DateTimeOriginal: res.exif.DateTimeOriginal || ''
         }
+        console.log(exif)
         return resolve({exif});
     });
 });
