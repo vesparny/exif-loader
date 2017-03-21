@@ -42,7 +42,6 @@ const getExifData = image => new Promise((resolve, reject) => {
             FocalLengthIn35mmFormat: res.exif.FocalLengthIn35mmFormat || '',
             DateTimeOriginal: res.exif.DateTimeOriginal || ''
         }
-        console.log(exif)
         return resolve({exif});
     });
 });
