@@ -33,12 +33,15 @@ const getExifData = image => new Promise((resolve, reject) => {
         }
         const res = hasNoExifData(err) ? extractor.exifData : data;
         const exif = {
-            camera: res.image.Make ? `${res.image.Make} ${res.image.Model}` :'',
-            aperture: res.exif.FNumber || '',
+            Make: res.image.Make || '',
+            Model: res.image.Model || '',
+            FNumber: res.exif.FNumber || '',
             ISO: res.exif.ISO || '',
             ExposureTime: res.exif.ExposureTime || '',
-            'Focal': res.exif.FocalLength || '',
-            'FocalLengthIn35mmFormat': res.exif.FocalLengthIn35mmFormat || ''
+            FocalLength: res.exif.FocalLength || '',
+            FocalLengthIn35mmFormat: res.exif.FocalLengthIn35mmFormat || '',
+            DateTimeOriginal: res.exif.DateTimeOriginal || '',
+            GPS: !iEmpty(res.gps) ? dms2dec(res.gps) : null
         }
         return resolve({exif});
     });
@@ -55,6 +58,60 @@ const getSize = image => new Promise((resolve, reject) => {
 const mergeResults = done => (results) => {
     const merged = results.reduce((acc, item) => Object.assign({}, acc, item), {});
     return done(null, `module.exports = ${JSON.stringify(merged)};`);
+};
+
+const iEmpty = (obj) => {
+    return Object.keys(obj).length === 0;
+};
+
+const dms2dec = (gps) => {
+    let lat = gps.GPSLatitude
+    const latRef = gps.GPSLatitudeRef
+    let lng = gps.GPSLongitude
+    const lngRef = gps.GPSLongitudeRef
+    const ref = {'N': 1, 'E': 1, 'S': -1, 'W': -1};
+    let sep = [' ,', ' ', ','];
+    let i;
+
+    if (typeof lat === 'string') {
+      for (i = 0; i < sep.length; i++) {
+        if (lat.split(sep[i]).length === 3) {
+          lat = lat.split(sep[i]);
+          break;
+        }
+      }
+    }
+
+    if (typeof lng === 'string') {
+      for (i = 0; i < sep.length; i++) {
+        if (lng.split(sep[i]).length === 3) {
+          lng = lng.split(sep[i]);
+          break;
+        }
+      }
+    }
+
+    for (i = 0; i < lat.length; i++) {
+      if (typeof lat[i] === 'string') {
+        lat[i] = lat[i].split('/');
+        lat[i] = parseInt(lat[i][0], 10) / parseInt(lat[i][1], 10);
+      }
+    }
+
+    for (i = 0; i < lng.length; i++) {
+      if (typeof lng[i] === 'string') {
+        lng[i] = lng[i].split('/');
+        lng[i] = parseInt(lng[i][0], 10) / parseInt(lng[i][1], 10);
+      }
+    }
+
+    lat = (lat[0] + (lat[1] / 60) + (lat[2] / 3600)) * ref[latRef];
+    lng = (lng[0] + (lng[1] / 60) + (lng[2] / 3600)) * ref[lngRef];
+
+    return {
+        lat: lat,
+        lng: lng
+    }
 };
 
 module.exports = function exifLoader(content) {
