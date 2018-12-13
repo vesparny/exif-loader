@@ -19,7 +19,7 @@ const hasNoExifData = err =>
 const getFile = (publicPath, content) => Promise.resolve((() => {
     try {
         return {
-            file: evaluate(`__webpack_public_path__='${publicPath}'; ${content}`),
+            src: evaluate(`__webpack_public_path__='${publicPath}'; ${content}`),
         };
     } catch (e) {
         return {};
