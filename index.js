@@ -41,7 +41,8 @@ const getExifData = image => new Promise((resolve, reject) => {
             FocalLength: res.exif.FocalLength || '',
             FocalLengthIn35mmFormat: res.exif.FocalLengthIn35mmFormat || '',
             DateTimeOriginal: res.exif.DateTimeOriginal || '',
-            GPS: !iEmpty(res.gps) ? dms2dec(res.gps) : null
+            GPS: !iEmpty(res.gps) ? dms2dec(res.gps) : null,
+            Description: res.image.ImageDescription || ''
         }
         return resolve({exif});
     });
